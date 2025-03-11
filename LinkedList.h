@@ -25,6 +25,29 @@ public:
             }
         }
     }
+    LinkedList(LinkedList&& other) : root(nullptr) {
+        if (this != &other) {
+            root = other.root;  
+            other.root = nullptr;
+        }
+    }
+    LinkedList& operator=(LinkedList&& other) {
+        if (this != &other) {
+            Node* current = root;
+            while (current) {
+                Node* temp = current;
+                current = current->next;
+                delete temp;
+            }
+            root = nullptr;
+    
+   
+            root = other.root;
+            other.root = nullptr;
+        }
+        return *this;
+    }
+    
 
     void insertAtBeginning(int val) {
         Node * newNode = new Node(val);

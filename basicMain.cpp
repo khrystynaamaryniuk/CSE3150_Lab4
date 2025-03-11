@@ -40,20 +40,35 @@ int main() {
     cout << "Copied list (should be same as previous): " << ll_copy << endl;
     // -1 -1 -1->NULL 
 
+    //  Move constructor test
+    LinkedList ll_moved = move(ll);
+    cout << "Moved list (should be same as original before move): " << ll_moved << endl;
+    cout << "Original list after move (should be NULL): " << ll << endl;
+
+    // Move assignment test
+    LinkedList ll_moved2;
+    ll_moved2.insertAtBeginning(5);
+    ll_moved2.insertAtBeginning(10);
+    cout << "Before move assignment, list: " << ll_moved2<< endl;
+    ll_moved2 = move(ll_moved);
+    cout << "After move assignment, list: " << ll_moved2<< endl;
+    cout << "Moved-from list (should be NULL): " << ll_moved << endl;
+
+
     // Test non-negative prefix sum function
-    cout << "Non-negative prefix sum check: " << (ll.non_negative_prefix() ? "YES" : "NO") << endl;
+    cout << "Non-negative prefix sum check: " << (ll_moved2.non_negative_prefix() ? "YES" : "NO") << endl;
     
     //NO 
 
     // Test non-positive prefix sum function
-    cout << "Non-positive prefix sum check: " << (ll.non_positive_prefix() ? "YES" : "NO") << endl;
+    cout << "Non-positive prefix sum check: " << (ll_moved2.non_positive_prefix() ? "YES" : "NO") << endl;
 
     //YES
 
     // Test pointer jumping
-    cout << "Before pointer jumping: " << ll << endl;
+    cout << "Before pointer jumping: " << ll_moved2 << endl;
     ll.pointerJumping();
-    cout << "After pointer jumping: " << ll << endl;
-    std::cout << "Testing ended" << std::endl;
+    cout << "After pointer jumping: " << ll_moved2 << endl;
+    cout << "Testing ended" << endl;
     return 0;
 }

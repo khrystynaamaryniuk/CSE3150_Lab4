@@ -100,3 +100,74 @@ TEST_CASE("Pointer Jumping") {
         CHECK(oss.str() == "1 -> -1 -> 0 ->  (cycle detected)");
     }
 }
+TEST_CASE("Move constructor and move assignment operator") {
+    LinkedList list1;
+    list1.insertAtBeginning(-1);
+    list1.insertAtBeginning(1);
+    
+    LinkedList list2 = move(list1);
+    
+    SUBCASE("Move constructor") {
+        ostringstream oss1, oss2;
+        oss1 << list1;  // Should be empty
+        oss2 << list2;   // Should contain the elements 1 -> -1
+        CHECK(oss1.str() == "NULL");
+        CHECK(oss2.str() == "1 -> -1");
+        CHECK(list1.root == nullptr);  // list1 should be empty after move
+    }
+
+    // Test move assignment operator
+    LinkedList list3;
+    list3.insertAtBeginning(10);
+    list3.insertAtEnd(20);
+    list3 = move(list2);
+    
+    SUBCASE("Move assignment operator ") {
+        ostringstream oss3, oss2;
+        oss3 << list3;   // Should contain the elements 1 -> -1
+        oss2 << list2;   // Should be empty
+        CHECK(oss3.str() == "1 -> -1");
+        CHECK(oss2.str() == "NULL");
+        CHECK(list2.root == nullptr);  // list2 should be empty after move
+    }
+    
+   
+    SUBCASE("Ensure the root addresses are moved") {
+        LinkedList list4;
+        list4.insertAtBeginning(5);
+        list4.insertAtEnd(10);
+        
+        Node* oldRoot = list4.root;
+        LinkedList list5 = move(list4);
+        
+        // After the move, list5 should take over the root
+        CHECK(list4.root == nullptr); // list4 should be empty
+        CHECK(list5.root == oldRoot); // list5 should point to the old root of list4
+    }
+}
+
+TEST_CASE("LinkedList move edge cases") {
+    LinkedList list1;
+    
+    SUBCASE("Move from empty list") {
+        LinkedList list2 = move(list1);
+        ostringstream oss;
+        oss << list2;
+        CHECK(oss.str() == "NULL");  // Should be empty
+        CHECK(list1.root == nullptr);  // list1 should still be empty
+    }
+
+    SUBCASE("Move to an already existing list") {
+        list1.insertAtBeginning(5);
+        LinkedList list2;
+        list2.insertAtBeginning(10);
+        list2 = move(list1);
+        
+        std::ostringstream oss1, oss2;
+        oss1 << list1;
+        oss2 << list2;
+        
+        CHECK(oss1.str() == "NULL");  
+        CHECK(oss2.str() == "5");    
+    }
+}
